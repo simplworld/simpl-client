@@ -8,15 +8,3 @@ test:
   stage: test
   script:
     - python setup.py test
-
-
-release:
-  stage: release
-  script:
-    - pip install wheel
-    - python setup.py sdist bdist_wheel
-  artifacts:
-    paths:
-    - dist
-  only:
-    - master
