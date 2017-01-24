@@ -13,6 +13,7 @@ test:
 release:
   stage: release
   script:
+    - pip install wheel
     - python setup.py sdist bdist_wheel
   artifacts:
     paths:
