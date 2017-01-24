@@ -17,6 +17,6 @@ release:
     - python setup.py sdist bdist_wheel
   artifacts:
     paths:
-    - dists
+    - build
   only:
     - master
