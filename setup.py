@@ -29,7 +29,7 @@ setup(
         'Framework :: Django',
     ],
     install_requires=[
-        "genericclient==0.1.13",
+        "genericclient==0.0.13",
     ],
     test_suite='nose.collector',
     tests_require=[
