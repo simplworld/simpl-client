@@ -2,14 +2,14 @@ from unittest import TestCase
 
 import responses
 
-from simpl_client import SimplClient
+from simpl_client import GamesAPIClient
 from genericclient.exceptions import ResourceNotFound, MultipleResourcesFound
 
 
 SIMPL_GAMES_URL = 'http://dummy.org'
 SIMPL_GAMES_AUTH = ('user', 'user')
 
-simpl_client = SimplClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
+games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
 
 
 # Create your tests here.
@@ -35,7 +35,7 @@ class SimplTestCase(TestCase):
                 },
             ])
 
-            users = simpl_client.users.all()
+            users = games_client.users.all()
             self.assertEqual(len(users), 3)
 
     def test_simpl_filter(self):
@@ -53,7 +53,7 @@ class SimplTestCase(TestCase):
                 },
             ])
 
-            users = simpl_client.users.filter(role="player")
+            users = games_client.users.filter(role="player")
             self.assertEqual(len(users), 2)
 
     def test_simpl_get_id(self):
@@ -64,13 +64,13 @@ class SimplTestCase(TestCase):
                 'role': 'player',
             })
 
-            user2 = simpl_client.users.get(id=2)
+            user2 = games_client.users.get(id=2)
             self.assertEqual(user2.username, 'user2')
 
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, SIMPL_GAMES_URL + '/users/9999/', status=404)
 
-            self.assertRaises(ResourceNotFound, simpl_client.users.get, id=9999)
+            self.assertRaises(ResourceNotFound, games_client.users.get, id=9999)
 
     def test_simpl_get_params(self):
         with responses.RequestsMock() as rsps:
@@ -87,12 +87,12 @@ class SimplTestCase(TestCase):
                 },
             ])
 
-            self.assertRaises(MultipleResourcesFound, simpl_client.users.get, role='player')
+            self.assertRaises(MultipleResourcesFound, games_client.users.get, role='player')
 
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, SIMPL_GAMES_URL + '/users/', body='[]')
 
-            self.assertRaises(ResourceNotFound, simpl_client.users.get, role='cookie_monster')
+            self.assertRaises(ResourceNotFound, games_client.users.get, role='cookie_monster')
 
         with responses.RequestsMock() as rsps:
             rsps.add(responses.GET, SIMPL_GAMES_URL + '/users/', json=[
@@ -103,5 +103,5 @@ class SimplTestCase(TestCase):
                 },
             ])
 
-            facilitator = simpl_client.users.get(role='facilitator')
+            facilitator = games_client.users.get(role='facilitator')
             self.assertEqual(facilitator.username, 'user3')
