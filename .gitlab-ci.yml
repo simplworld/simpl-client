@@ -2,7 +2,6 @@ image: python:3.5
 
 stages:
   - test
-  - release
 
 test:
   stage: test
