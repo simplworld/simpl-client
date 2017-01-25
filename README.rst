@@ -1,8 +1,12 @@
+GamesAPIClient
+==============
+
 A pre-configured generic client for the simpl-games-api
 
 Usage::
 
-    from modelservice.simpl import simpl_client
+    from simpl_client import GamesAPIClient
+    games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
 
 Endpoints
 ---------
@@ -14,11 +18,11 @@ Endpoints are available as properties on the main instance.
 
 Retrieves all resources (essentially a simple ``GET`` on the endpoint)::
 
-    simpl_client.runusers.all()  # GET /runusers/
+    games_client.runusers.all()  # GET /runusers/
 
 ``.filter(**kwargs)`` calls a ``GET`` with ``kwargs`` as querystring values::
 
-    simpl_client.runusers.filter(run=12, world=1)  # GET /runusers/?run=12&world=1
+    games_client.runusers.filter(run=12, world=1)  # GET /runusers/?run=12&world=1
 
 ``.get(**kwargs)``
 ~~~~~~~~~~~~~~~~~~
@@ -38,9 +42,9 @@ Note that ``.get()`` will return a ``Resource``, not a list of ``Resource``s
 
 ::
 
-    simpl_client.runusers.filter(run=12, world=1)  # GET /runusers/?run=12&world=1
-    simpl_client.runusers.filter(id=12)  # GET /runusers/12/
-    simpl_client.users.filter(username='alice')  # GET /users/alice/
+    games_client.runusers.filter(run=12, world=1)  # GET /runusers/?run=12&world=1
+    games_client.runusers.filter(id=12)  # GET /runusers/12/
+    games_client.users.filter(username='alice')  # GET /users/alice/
 
 ``.create(payload)``
 ~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +52,7 @@ Note that ``.get()`` will return a ``Resource``, not a list of ``Resource``s
 Will result in a ``POST``, with ``payload`` (a ``dict``) as the request's body,
 returning a new ``Resource``::
 
-    runuser = simpl_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
+    runuser = games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
 
 ``.get_or_create(defaults, **kwargs)``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +70,7 @@ to create the resource.
 If ``payload`` contains a key called ``'id'``, will issue a ``PUT``, otherwise
 it will call ``.create``::
 
-    runuser = simpl_client.runusers.create_or_update({'id': 1234, 'world': 1})  # PUT /runusers/1234/
+    runuser = games_client.runusers.create_or_update({'id': 1234, 'world': 1})  # PUT /runusers/1234/
 
 
 ``.delete(pk)``
@@ -74,7 +78,7 @@ it will call ``.create``::
 
 Will issue a ``DELETE``, and will use ``pk`` as part of the URL::
 
-    simpl_client.runusers.delete(24)  # DELETE /runusers/24/
+    games_client.runusers.delete(24)  # DELETE /runusers/24/
 
 Resources
 ---------
@@ -93,12 +97,44 @@ contains the original payload received from the server.
 ``Resource.delete()`` will result in a ``DELETE``, with ``Resource.id`` as
 par of the URL::
 
-    runuser = simpl_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
+    runuser = games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
     runuser.delete()  # DELETE /runuser/345/ -- the ID 345 was returned by the server in the previous response
 
 ``Resource.save()`` will result in a ``PUT``, with ``Resource.id`` as
 par of the URL::
 
-    runuser = simpl_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
+    runuser = games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
     runuser.run = 13
     runuser.save()  # PUT /runuser/345/
+
+ModelServiceClient
+==================
+
+An http client that can be used to talk to the modelservice.
+
+Note that the modelservice will accept the client's requests only in DEBUG
+mode.
+
+Usage::
+
+    from simpl_client import ModelServiceClient
+    client = ModelServiceClient('http://modelservice:8080')
+
+    result = client.call('procedure', 1, 2, 3, arg1='a', arg2='b')
+
+    # or
+
+    client.publish('topic', 1, 2, 3, arg1='a', arg2='b')
+
+The client support prefix, either on instantiation::
+
+    client = ModelServiceClient('http://modelservice:8080', prefixes={'model': 'edu.upenn.sims.mysim'})
+
+or via the `add_prefixes()` method::
+
+    client.add_prefixes(model='edu.upenn.sims.mysim')
+
+Then you can call::
+
+    client.publish('prefix:mytopic')
+
