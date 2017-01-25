@@ -4,10 +4,6 @@ from genericclient import GenericClient
 from genericclient.exceptions import ResourceNotFound, MultipleResourcesFound  # noqa
 
 
-_version = "0.0.1"
-__version__ = VERSION = tuple(map(int, _version.split('.')))
-
-
 # silence 'Resetting dropped connection' logs
 
 logger = logging.getLogger('requests.packages.urllib3.connectionpool')
