@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1'
+VERSION = '0.1.0'
 
 
 f = open(os.path.join(os.path.dirname(__file__), 'README.rst'))
@@ -29,7 +29,7 @@ setup(
         'Framework :: Django',
     ],
     install_requires=[
-        "genericclient==0.0.13",
+        "genericclient==0.1.03",
     ],
     test_suite='nose.collector',
     tests_require=[
