@@ -1,7 +1,7 @@
 GamesAPIClient
 ==============
 
-A pre-configured generic client for the simpl-games-api
+Python clients for the [`simpl-games-api`](https://gitlab.com/lldev-team/simpl-games-api) and simulations [modelservices](https://gitlab.com/lldev-team/simpl-modelservice).
 
 Usage::
 
