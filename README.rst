@@ -41,7 +41,7 @@ If the returned list is empty, will raise ``ResourceNotFound``.
 
 If the returned list contains more than 1 resource, will raise ``MultipleResourcesFound``
 
-Note that ``.get()`` will return a ``Resource``, not a list of ``Resource``s
+Note that ``.get()`` will return a ``Resource``, not a list of ``Resource`` s
 
 ::
 
@@ -92,7 +92,7 @@ All endpoints methods (with the exception of ``.delete()``) return either a
 A ``Resource`` is just a wrapping class for a ``dict``, where keys can be accessed
 as properties.
 
-Additionally, ``Resource``s have a special property called ``.payload``, which
+Additionally, ``Resource`` s have a special property called ``.payload``, which
 contains the original payload received from the server.
 
 ``Resource`` s have the following methods:
