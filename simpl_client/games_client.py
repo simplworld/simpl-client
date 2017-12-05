@@ -1,5 +1,5 @@
-from genericclient import GenericClient, Endpoint
-from genericclient_base.exceptions import HTTPError
+from genericclient_aiohttp import GenericClient, Endpoint
+from genericclient_aiohttp.exceptions import HTTPError
 
 """
 A pre-configured generic client for the simpl-games-api
@@ -115,34 +115,26 @@ Bulk requests
     games_client.bulk.results.create([...], return_ids=False)
     games_client.bulk.results.delete(**lookup)
 
-
-Detail Routes
--------------
-
-::
-
-    games_client.scenario(id=123).rewind() 
-
-
 """
 
 
 class BulkEndpoint(Endpoint):
-    def create(self, payload, return_ids=False):
-        response = self.request('post', self.url, json=payload)
+    async def create(self, payload, return_ids=False):
+        response = await self.request('post', self.url, json=payload)
         if self.status_code(response) != 201:
             raise HTTPError(response)
 
         if return_ids is True:
-            result = self.api.hydrate_json(response)
+            result = await self.api.hydrate_json(response)
             return [res['id'] for res in result]
 
-    def delete(self, **kwargs):
+    async def delete(self, **kwargs):
         """
         :param params: filter lookup for objects to be deleted
         :return: None
         """
-        response = self.request('delete', self.url, params=kwargs)
+        params = self.convert_lookup(kwargs)
+        response = await self.request('delete', self.url, params=params)
 
         if self.status_code(response) != 204:
             raise HTTPError(response)
