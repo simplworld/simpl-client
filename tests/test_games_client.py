@@ -104,3 +104,36 @@ class SimplTestCase(TestCase):
 
             facilitator = games_client.users.get(role='facilitator')
             self.assertEqual(facilitator.username, 'user3')
+
+    def test_simpl_bulk_create(self):
+        payload = [
+            {
+                'id': 1,
+                'username': 'user1',
+                'role': 'player',
+            },
+            {
+                'id': 2,
+                'username': 'user2',
+                'role': 'player',
+            },
+        ]
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.POST, SIMPL_GAMES_URL + '/bulk/users/', json=payload, status=201)
+
+            resources = games_client.bulk.users.create(payload)
+            self.assertEqual(resources, None)
+
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.POST, SIMPL_GAMES_URL + '/bulk/users/', json=payload, status=201)
+
+            resources = games_client.bulk.users.create(payload, return_ids=True)
+            self.assertEqual(len(resources), 2)
+            self.assertEqual(resources[0], 1)
+
+    def test_simpl_bulk_delete(self):
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.DELETE, SIMPL_GAMES_URL + '/bulk/users/', status=204)
+
+            resources = games_client.bulk.users.delete(id__in=[1, 2])
+            self.assertEqual(resources, None)

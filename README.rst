@@ -110,6 +110,23 @@ par of the URL::
     runuser.run = 13
     runuser.save()  # PUT /runuser/345/
 
+
+Bulk requests
+-------------
+
+::
+
+    games_client.bulk.results.create([...], return_ids=False)
+    games_client.bulk.results.delete(**lookup)
+
+
+Detail Routes
+-------------
+
+::
+
+    games_client.scenario(id=123).rewind()
+
 ModelServiceClient
 ==================
 
