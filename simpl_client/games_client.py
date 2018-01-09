@@ -162,6 +162,6 @@ class GamesAPIClient(GenericClient):
         self.bulk = BulkClient(
             url=self.url + 'bulk/',
             session=self.session,
-            auth=self.auth,
+            auth=kwargs['auth'],
             trailing_slash=self.trailing_slash,
         )
