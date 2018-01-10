@@ -105,6 +105,15 @@ class SimplTestCase(TestCase):
             facilitator = games_client.users.get(role='facilitator')
             self.assertEqual(facilitator.username, 'user3')
 
+    def test_simpl_bulk_unauthd(self):
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.GET, SIMPL_GAMES_URL + '/bulk/users/', status=403)
+
+
+            with self.assertRaises(GamesAPIClient.NotAuthenticatedError):
+                resources = games_client.bulk.users.all()
+                self.assertEqual(resources, None)
+
     def test_simpl_bulk_create(self):
         payload = [
             {
