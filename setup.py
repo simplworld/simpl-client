@@ -29,12 +29,13 @@ setup(
         'Framework :: Django',
     ],
     install_requires=[
-        "genericclient==0.0.23",
-        "genericclient-base==0.0.4",
+        "aiohttp>=2.3.2,<2.4",
+        "genericclient-aiohttp==0.0.10",
     ],
     test_suite='nose.collector',
     tests_require=[
-        "responses==0.5.1",
+        "asynctest",
+        "testing-aiohttp>=0.0.5",
         "nose==1.3.7",
     ]
 )

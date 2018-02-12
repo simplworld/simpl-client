@@ -1,13 +1,13 @@
 import json
 
 
-def request_callback(request):
+async def request_callback(request):
     headers = {'Content-Type': 'application/json'}
     uris = {
         'edu.upenn.sims.mysim.myscope.sometopic': lambda x, y: {'id': 1234},
         'edu.upenn.sims.mysim.myscope.add': lambda x, y: x + y,
     }
-    payload = json.loads(request.body)
+    payload = json.loads(request.body._value.decode())
     try:
         if 'topic' in payload:
             method = uris[payload['topic']]
