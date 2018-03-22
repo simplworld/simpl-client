@@ -29,7 +29,7 @@ setup(
         'Framework :: Django',
     ],
     install_requires=[
-        "genericclient-aiohttp==1.1.1",
+        "genericclient-aiohttp>=1.1,<1.2",
     ],
     setup_requires=[
         "pytest-runner",
