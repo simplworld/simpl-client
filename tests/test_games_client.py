@@ -1,124 +1,13 @@
-from asynctest import TestCase
+import pytest
 
-from test_aiohttp import RouteManager
-
-from simpl_client import GamesAPIClient
-
-
-SIMPL_GAMES_URL = 'http://dummy.org'
-SIMPL_GAMES_AUTH = ('user', 'user')
-
-games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
+from mocket.plugins.httpretty import HTTPretty
+from mocket import Mocketizer
 
 
-# Create your tests here.
-class SimplTestCase(TestCase):
-
-    async def test_simpl_all(self):
-        with RouteManager() as rsps:
-            rsps.add('GET', SIMPL_GAMES_URL + '/users/', json=[
-                {
-                    'id': 1,
-                    'username': 'user1',
-                    'role': 'player',
-                },
-                {
-                    'id': 2,
-                    'username': 'user2',
-                    'role': 'player',
-                },
-                {
-                    'id': 3,
-                    'username': 'user3',
-                    'role': 'facilitator',
-                },
-            ])
-
-            users = await games_client.users.all()
-            self.assertEqual(len(users), 3)
-
-    async def test_simpl_filter(self):
-        with RouteManager() as rsps:
-            rsps.add('GET', SIMPL_GAMES_URL + '/users/', json=[
-                {
-                    'id': 1,
-                    'username': 'user1',
-                    'role': 'player',
-                },
-                {
-                    'id': 2,
-                    'username': 'user2',
-                    'role': 'player',
-                },
-            ])
-
-            users = await games_client.users.filter(role="player")
-            self.assertEqual(len(users), 2)
-
-    async def test_simpl_get_id(self):
-        with RouteManager() as rsps:
-            rsps.add('GET', SIMPL_GAMES_URL + '/users/2/', json={
-                'id': 2,
-                'username': 'user2',
-                'role': 'player',
-            })
-
-            user2 = await games_client.users.get(id=2)
-            self.assertEqual(user2.username, 'user2')
-
-        with RouteManager() as rsps:
-            rsps.add('GET', SIMPL_GAMES_URL + '/users/9999/', status=404)
-
-            with self.assertRaises(games_client.ResourceNotFound):
-                await games_client.users.get(id=9999)
-
-    async def test_simpl_get_params(self):
-        with RouteManager() as rsps:
-            rsps.add('GET', SIMPL_GAMES_URL + '/users/', json=[
-                {
-                    'id': 1,
-                    'username': 'user1',
-                    'role': 'player',
-                },
-                {
-                    'id': 2,
-                    'username': 'user2',
-                    'role': 'player',
-                },
-            ])
-
-            with self.assertRaises(games_client.MultipleResourcesFound):
-                await games_client.users.get(role='player')
-
-        with RouteManager() as rsps:
-            rsps.add('GET', SIMPL_GAMES_URL + '/users/', json=[])
-
-            with self.assertRaises(games_client.ResourceNotFound):
-                await games_client.users.get(role='cookie_monster')
-
-        with RouteManager() as rsps:
-            rsps.add('GET', SIMPL_GAMES_URL + '/users/', json=[
-                {
-                    'id': 3,
-                    'username': 'user3',
-                    'role': 'facilitator',
-                },
-            ])
-
-            facilitator = await games_client.users.get(role='facilitator')
-            self.assertEqual(facilitator.username, 'user3')
-
-    async def test_simpl_bulk_unauthd(self):
-        with RouteManager() as rsps:
-            rsps.add('GET', SIMPL_GAMES_URL + '/bulk/users/', status=403)
-
-
-            with self.assertRaises(GamesAPIClient.NotAuthenticatedError):
-                resources = await games_client.bulk.users.all()
-                self.assertEqual(resources, None)
-
-    async def test_simpl_bulk_create(self):
-        payload = [
+@pytest.mark.asyncio
+async def test_simpl_all(games_client, register_json):
+    with Mocketizer():
+        register_json(HTTPretty.GET, '/users/', json=[
             {
                 'id': 1,
                 'username': 'user1',
@@ -129,23 +18,137 @@ class SimplTestCase(TestCase):
                 'username': 'user2',
                 'role': 'player',
             },
-        ]
-        with RouteManager() as rsps:
-            rsps.add('POST', SIMPL_GAMES_URL + '/bulk/users/', json=payload, status=201)
+            {
+                'id': 3,
+                'username': 'user3',
+                'role': 'facilitator',
+            },
+        ])
 
-            resources = await games_client.bulk.users.create(payload)
-            self.assertEqual(resources, None)
+        users = await games_client.users.all()
+        assert len(users) == 3
 
-        with RouteManager() as rsps:
-            rsps.add('POST', SIMPL_GAMES_URL + '/bulk/users/', json=payload, status=201)
 
-            resources = await games_client.bulk.users.create(payload, return_ids=True)
-            self.assertEqual(len(resources), 2)
-            self.assertEqual(resources[0], 1)
+@pytest.mark.asyncio
+async def test_simpl_filter(games_client, register_json):
+    with Mocketizer():
+        register_json(HTTPretty.GET, '/users/?role=player', json=[
+            {
+                'id': 1,
+                'username': 'user1',
+                'role': 'player',
+            },
+            {
+                'id': 2,
+                'username': 'user2',
+                'role': 'player',
+            },
+        ])
 
-    async def test_simpl_bulk_delete(self):
-        with RouteManager() as rsps:
-            rsps.add('DELETE', SIMPL_GAMES_URL + '/bulk/users/', status=204)
+        users = await games_client.users.filter(role="player")
+        assert len(users) == 2
 
-            resources = await games_client.bulk.users.delete(id__in=[1, 2])
-            self.assertEqual(resources, None)
+
+@pytest.mark.asyncio
+async def test_simpl_get_id(games_client, register_json):
+    with Mocketizer():
+        register_json(HTTPretty.GET, '/users/2/', json={
+            'id': 2,
+            'username': 'user2',
+            'role': 'player',
+        })
+
+        user2 = await games_client.users.get(id=2)
+        assert user2.username == 'user2'
+
+    with Mocketizer():
+        register_json(HTTPretty.GET, '/users/9999/', status=404)
+
+        with pytest.raises(games_client.ResourceNotFound):
+            await games_client.users.get(id=9999)
+
+
+@pytest.mark.asyncio
+async def test_simpl_get_params(games_client, register_json):
+    with Mocketizer():
+        register_json(HTTPretty.GET, '/users/?role=player', json=[
+            {
+                'id': 1,
+                'username': 'user1',
+                'role': 'player',
+            },
+            {
+                'id': 2,
+                'username': 'user2',
+                'role': 'player',
+            },
+        ])
+
+        with pytest.raises(games_client.MultipleResourcesFound):
+            await games_client.users.get(role='player')
+
+    with Mocketizer():
+        register_json(HTTPretty.GET, '/users/?role=cookie_monster', json=[])
+
+        with pytest.raises(games_client.ResourceNotFound):
+            await games_client.users.get(role='cookie_monster')
+
+    with Mocketizer():
+        register_json(HTTPretty.GET, '/users/?role=facilitator', json=[
+            {
+                'id': 3,
+                'username': 'user3',
+                'role': 'facilitator',
+            },
+        ])
+
+        facilitator = await games_client.users.get(role='facilitator')
+        assert facilitator.username == 'user3'
+
+
+@pytest.mark.asyncio
+async def test_simpl_bulk_unauthd(games_client, register_json):
+    with Mocketizer():
+        register_json(HTTPretty.GET, '/bulk/users/', status=403)
+
+        with pytest.raises(games_client.NotAuthenticatedError):
+            resources = await games_client.bulk.users.all()
+            assert resources is None
+
+
+@pytest.mark.asyncio
+async def test_simpl_bulk_create(games_client, register_json):
+    payload = [
+        {
+            'id': 1,
+            'username': 'user1',
+            'role': 'player',
+        },
+        {
+            'id': 2,
+            'username': 'user2',
+            'role': 'player',
+        },
+    ]
+    with Mocketizer():
+        register_json(HTTPretty.POST, '/bulk/users/', json=payload, status=201)
+
+        resources = await games_client.bulk.users.create(payload)
+        assert resources is None
+
+    with Mocketizer():
+        register_json(HTTPretty.POST, '/bulk/users/', json=payload, status=201)
+
+        resources = await games_client.bulk.users.create(payload, return_ids=True)
+        assert len(resources) == 2
+        assert resources[0] == 1
+
+
+@pytest.mark.asyncio
+async def test_simpl_bulk_delete(games_client, register_json):
+    with Mocketizer():
+        register_json(HTTPretty.DELETE, '/bulk/users/?id__in=1&id__in=2', status=204)
+
+        resources = await games_client.bulk.users.delete(id__in=[1, 2])
+        assert resources is None
+

@@ -29,13 +29,15 @@ setup(
         'Framework :: Django',
     ],
     install_requires=[
-        "aiohttp>=2.3.2,<2.4",
-        "genericclient-aiohttp==0.0.10",
+        "genericclient-aiohttp==1.0.0",
     ],
-    test_suite='nose.collector',
+    setup_requires=[
+        "pytest-runner",
+    ],
+    test_suite='tests',
     tests_require=[
-        "asynctest",
-        "testing-aiohttp>=0.0.5",
-        "nose==1.3.7",
+        "mocket",
+        "pytest",
+        "pytest-asyncio",
     ]
 )

@@ -129,12 +129,11 @@ Detail Routes
 class BulkEndpoint(Endpoint):
     async def create(self, payload, return_ids=False):
         response = await self.request('post', self.url, json=payload)
-        if self.status_code(response) != 201:
+        if response.status_code != 201:
             raise HTTPError(response)
 
         if return_ids is True:
-            result = await self.api.hydrate_json(response)
-            return [res['id'] for res in result]
+            return [res['id'] for res in response.data]
 
     async def delete(self, **kwargs):
         """
@@ -144,7 +143,7 @@ class BulkEndpoint(Endpoint):
         params = self.convert_lookup(kwargs)
         response = await self.request('delete', self.url, params=params)
 
-        if self.status_code(response) != 204:
+        if response.status_code != 204:
             raise HTTPError(response)
 
         return None
@@ -161,7 +160,7 @@ class GamesAPIClient(GenericClient):
 
         self.bulk = BulkClient(
             url=self.url + 'bulk/',
-            session=self.session,
+            session=self._session,
             auth=kwargs['auth'],
             trailing_slash=self.trailing_slash,
         )
