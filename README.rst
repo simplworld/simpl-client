@@ -127,34 +127,9 @@ Detail Routes
 
     games_client.scenario(id=123).rewind()
 
-ModelServiceClient
-==================
+Testing
+-------
 
-An http client that can be used to talk to the modelservice.
+Running the tests requires having ``libmagic`` installed.
 
-Note that the modelservice will accept the client's requests only in DEBUG
-mode.
-
-Usage::
-
-    from simpl_client import ModelServiceClient
-    client = ModelServiceClient('http://modelservice:8080')
-
-    result = client.call('procedure', 1, 2, 3, arg1='a', arg2='b')
-
-    # or
-
-    client.publish('topic', 1, 2, 3, arg1='a', arg2='b')
-
-The client support prefix, either on instantiation::
-
-    client = ModelServiceClient('http://modelservice:8080', prefixes={'model': 'edu.upenn.sims.mysim'})
-
-or via the `add_prefixes()` method::
-
-    client.add_prefixes(model='edu.upenn.sims.mysim')
-
-Then you can call::
-
-    client.publish('prefix:mytopic')
-
+On OS X, simply run ``brew install libmagic``.
