@@ -1,6 +1,10 @@
 GamesAPIClient
 ==============
 
+.. image:: https://learninglab.githost.io/lldev-team/simpl-client/badges/master/coverage.svg
+    :target: https://learninglab.githost.io/lldev-team/simpl-client/commits/master
+
+
 Python clients for the simpl-games-api_ and simulations modelservices_.
 
 .. _simpl-games-api: https://gitlab.com/lldev-team/simpl-games-api
