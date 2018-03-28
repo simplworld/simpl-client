@@ -143,6 +143,11 @@ async def test_simpl_bulk_create(games_client, register_json):
         assert len(resources) == 2
         assert resources[0] == 1
 
+    with Mocketizer():
+        register_json(HTTPretty.POST, '/bulk/users/', json=payload, status=500)
+
+        with pytest.raises(games_client.HTTPError):
+            await games_client.bulk.users.create(payload)
 
 @pytest.mark.asyncio
 async def test_simpl_bulk_delete(games_client, register_json):
@@ -152,3 +157,8 @@ async def test_simpl_bulk_delete(games_client, register_json):
         resources = await games_client.bulk.users.delete(id__in=[1, 2])
         assert resources is None
 
+    with Mocketizer():
+        register_json(HTTPretty.DELETE, '/bulk/users/?id__in=1&id__in=2', status=500)
+
+        with pytest.raises(games_client.HTTPError):
+            await games_client.bulk.users.delete(id__in=[1, 2])

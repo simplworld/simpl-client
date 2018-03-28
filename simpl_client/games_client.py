@@ -1,5 +1,6 @@
 from genericclient_aiohttp import GenericClient, Endpoint
 from genericclient_aiohttp.exceptions import HTTPError
+from genericclient_aiohttp.pagination import link_header
 
 """
 A pre-configured generic client for the simpl-games-api
@@ -156,6 +157,7 @@ class BulkClient(GenericClient):
 class GamesAPIClient(GenericClient):
     def __init__(self, *args, **kwargs):
         kwargs['trailing_slash'] = True
+        kwargs['autopaginate'] = link_header
         super(GamesAPIClient, self).__init__(*args, **kwargs)
 
         self.bulk = BulkClient(
@@ -163,4 +165,5 @@ class GamesAPIClient(GenericClient):
             session=self._session,
             auth=kwargs['auth'],
             trailing_slash=self.trailing_slash,
+            autopaginate=link_header,
         )
