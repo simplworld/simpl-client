@@ -15,7 +15,7 @@ setup(
     long_description=readme,
     author='',
     author_email='',
-    url='https://gitlab.com/lldev-team/simpl-client',
+    url='https://github.com/simplworld/simpl-client',
     include_package_data=True,
     packages=find_packages(),
     zip_safe=False,
