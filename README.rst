@@ -5,9 +5,6 @@ GamesAPIClient
     :alt: Build Status
     :target: http://travis-ci.org/simplworld/simpl-client.png
 
-.. image:: https://learninglab.githost.io/lldev-team/simpl-client/badges/master/coverage.svg
-    :target: https://learninglab.githost.io/lldev-team/simpl-client/commits/master
-
 
 Python clients for the simpl-games-api_ and simulations modelservices_.
 
