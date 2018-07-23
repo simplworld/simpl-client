@@ -1,9 +1,7 @@
 GamesAPIClient
 ==============
 
-.. image:: https://secure.travis-ci.org/simplworld/simpl-client.png
-    :alt: Build Status
-    :target: http://travis-ci.org/simplworld/simpl-client.png
+.. image:: https://travis-ci.com/simplworld/simpl-client.svg?token=cyqpBgqLC1o8qUptfcpE&branch=master
 
 
 Python clients for the simpl-games-api_ and simulations modelservices_.
