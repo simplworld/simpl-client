@@ -1,6 +1,10 @@
 GamesAPIClient
 ==============
 
+.. image:: https://secure.travis-ci.org/simplworld/simpl-client.png
+    :alt: Build Status
+    :target: http://travis-ci.org/simplworld/simpl-client.png
+
 .. image:: https://learninglab.githost.io/lldev-team/simpl-client/badges/master/coverage.svg
     :target: https://learninglab.githost.io/lldev-team/simpl-client/commits/master
 
