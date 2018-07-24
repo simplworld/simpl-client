@@ -2,6 +2,7 @@ GamesAPIClient
 ==============
 
 .. image:: https://travis-ci.com/simplworld/simpl-client.svg?token=cyqpBgqLC1o8qUptfcpE&branch=master
+    :target: https://travis-ci.com/simplworld/simpl-client
 
 
 Python clients for the simpl-games-api_ and simulations modelservices_.
