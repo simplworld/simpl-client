@@ -1,4 +1,4 @@
-_version = "0.7.1"
+_version = "0.7.2"
 __version__ = VERSION = tuple(map(int, _version.split('.')))
 
 
