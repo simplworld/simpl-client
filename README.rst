@@ -5,7 +5,7 @@ GamesAPIClient
     :target: https://travis-ci.com/simplworld/simpl-client
 
 
-Python clients for the simpl-games-api_ and simulations modelservices_.
+Python clients for accessing simpl-games-api.
 
 .. _simpl-games-api: https://gitlab.com/lldev-team/simpl-games-api
 .. _modelservices: https://gitlab.com/lldev-team/simpl-modelservice
