@@ -11,7 +11,7 @@ f.close()
 setup(
     name='simpl_client',
     version=VERSION,
-    description='',
+    description='Python clients for accessing simpl-games-api',
     long_description=readme,
     author='',
     author_email='',
