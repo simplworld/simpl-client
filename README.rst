@@ -7,13 +7,16 @@ GamesAPIClient
 
 Python clients for accessing simpl-games-api.
 
-.. _simpl-games-api: https://gitlab.com/lldev-team/simpl-games-api
-.. _modelservices: https://gitlab.com/lldev-team/simpl-modelservice
-
 Usage::
 
     from simpl_client import GamesAPIClient
     games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
+
+Installation
+------------
+::
+
+    pip install simpl-client
 
 Endpoints
 ---------
@@ -130,6 +133,16 @@ Detail Routes
 ::
 
     games_client.scenario(id=123).rewind()
+
+
+Setup development environment
+-----------------------------
+::
+
+    git clone git@github.com:simplworld/simpl-client.git
+    cd simpl-client
+    mkvirtualenv simpl-client
+    pip install -e .
 
 Testing
 -------
