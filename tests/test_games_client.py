@@ -30,6 +30,27 @@ async def test_simpl_all(games_client, register_json):
 
 
 @pytest.mark.asyncio
+async def test_game_save(games_client, register_json):
+    with Mocketizer():
+        register_json(HTTPretty.PUT, '/games/simpl-demo/', json={
+            'id': 1,
+            'slug': 'simpl-demo',
+        })
+
+        register_json(HTTPretty.GET, '/games/simpl-demo/', json={
+            'id': 1,
+            'slug': 'simpl-demo',
+        })
+
+        register_json(HTTPretty.PUT, '/games/1/', status=404)
+
+        game = await games_client.games.get(slug='simpl-demo')
+
+        saved = await game.save()
+        assert saved.slug == 'simpl-demo'
+
+
+@pytest.mark.asyncio
 async def test_simpl_filter(games_client, register_json):
     with Mocketizer():
         register_json(HTTPretty.GET, '/users/?role=player', json=[

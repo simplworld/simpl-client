@@ -1,4 +1,4 @@
-from genericclient_aiohttp import GenericClient, Endpoint
+from genericclient_aiohttp import GenericClient, Endpoint, Resource
 from genericclient_aiohttp.exceptions import HTTPError
 from genericclient_aiohttp.pagination import link_header
 
@@ -127,6 +127,14 @@ Detail Routes
 """
 
 
+class GameResource(Resource):
+    pk_name = 'slug'
+
+
+class GameEndpoint(Endpoint):
+    resource_class = GameResource
+
+
 class BulkEndpoint(Endpoint):
     async def create(self, payload, return_ids=False):
         response = await self.request('post', self.url, json=payload)
@@ -155,6 +163,10 @@ class BulkClient(GenericClient):
 
 
 class GamesAPIClient(GenericClient):
+    endpoint_classes = {
+        'games': GameEndpoint,
+    }
+
     def __init__(self, *args, **kwargs):
         kwargs['trailing_slash'] = True
         kwargs['autopaginate'] = link_header
