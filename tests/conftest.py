@@ -4,8 +4,7 @@ import pytest
 
 from mocket.plugins.httpretty import HTTPretty
 
-from simpl_client import GamesAPIClient
-
+from simpl_client.sync import GamesAPIClient
 
 SIMPL_GAMES_URL = 'http://dummy.org'
 SIMPL_GAMES_AUTH = ('user', 'user')
@@ -36,4 +35,5 @@ def register_json(simpl_url):
         kwargs.setdefault('content-type', 'application/json')
         kwargs.setdefault('match_querystring', True)
         return HTTPretty.register_uri(method, simpl_url + url, body, **kwargs)
+
     return fn

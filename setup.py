@@ -30,6 +30,7 @@ setup(
     ],
     install_requires=[
         "genericclient-aiohttp>=1.3,<1.4",
+        "genericclient>=1.3,<1.4",
     ],
     setup_requires=[
         "pytest-runner",

@@ -5,11 +5,11 @@ GamesAPIClient
     :target: https://travis-ci.com/simplworld/simpl-client
 
 
-Python clients for accessing simpl-games-api.
+Python clients for asynchronously accessing simpl-games-api.
 
 Usage::
 
-    from simpl_client import GamesAPIClient
+    from simpl_client.async import GamesAPIClient
     games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
 
 Installation
