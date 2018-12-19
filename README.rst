@@ -12,6 +12,11 @@ Usage::
     from simpl_client.async import GamesAPIClient
     async_games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
 
+to synchronously access simpl-games-api use::
+
+    from simpl_client.sync import GamesAPIClient
+    sync_games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
+
 Installation
 ------------
 ::
@@ -146,6 +151,7 @@ Setup development environment
 
 Testing
 -------
+::
 
     python setup.py test
 

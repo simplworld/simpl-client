@@ -7,8 +7,7 @@ A pre-configured asynchronous generic client for the simpl-games-api.
 
 Usage::
 
-    from modelservice.simpl import get_games_client
-    async_games_client = get_games_client()
+    from modelservice.simpl.async import games_client as async_games_client
 
 Endpoints
 ---------
@@ -63,7 +62,7 @@ Issues a GET to fetch the resource. If the resource is not found, issues a POST
 to create the resource.
 
     # Assuming it doesn't exist
-    run = await myclient.runs.get_or_create(game=12, defaults={'active': True})  # GET /runs/?game=12, then POST /runs/
+    run = await async_games_client.runs.get_or_create(game=12, defaults={'active': True})  # GET /runs/?game=12, then POST /runs/
 
 
 ``.create_or_update(payload)``
