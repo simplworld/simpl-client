@@ -127,18 +127,6 @@ Detail Routes
 """
 
 
-def convert_lookup(lookup):
-    items = lookup.items()
-    multi_dict = []
-    for k, v in items:
-        if isinstance(v, (tuple, list)):
-            for item in v:
-                multi_dict.append((k, str(item)))
-        else:
-            multi_dict.append((k, str(v)))
-    return multi_dict
-
-
 class GameResource(Resource):
     pk_name = 'slug'
 
