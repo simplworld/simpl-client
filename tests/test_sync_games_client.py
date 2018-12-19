@@ -4,8 +4,7 @@ from mocket.plugins.httpretty import HTTPretty
 from mocket import Mocketizer
 
 
-@pytest.mark.asyncio
-async def test_simpl_all(games_client, register_json):
+def test_simpl_all(sync_games_client, register_json):
     with Mocketizer():
         register_json(HTTPretty.GET, '/users/', json=[
             {
@@ -25,12 +24,11 @@ async def test_simpl_all(games_client, register_json):
             },
         ])
 
-        users = await games_client.users.all()
+        users = sync_games_client.users.all()
         assert len(users) == 3
 
 
-@pytest.mark.asyncio
-async def test_game_save(games_client, register_json):
+def test_game_save(sync_games_client, register_json):
     with Mocketizer():
         register_json(HTTPretty.PUT, '/games/simpl-demo/', json={
             'id': 1,
@@ -44,14 +42,13 @@ async def test_game_save(games_client, register_json):
 
         register_json(HTTPretty.PUT, '/games/1/', status=404)
 
-        game = await games_client.games.get(slug='simpl-demo')
+        game = sync_games_client.games.get(slug='simpl-demo')
 
-        saved = await game.save()
+        saved = game.save()
         assert saved.slug == 'simpl-demo'
 
 
-@pytest.mark.asyncio
-async def test_simpl_filter(games_client, register_json):
+def test_simpl_filter(sync_games_client, register_json):
     with Mocketizer():
         register_json(HTTPretty.GET, '/users/?role=player', json=[
             {
@@ -66,12 +63,12 @@ async def test_simpl_filter(games_client, register_json):
             },
         ])
 
-        users = await games_client.users.filter(role="player")
+        users = sync_games_client.users.filter(role="player")
         assert len(users) == 2
 
 
-@pytest.mark.asyncio
-async def test_simpl_get_id(games_client, register_json):
+
+def test_simpl_get_id(sync_games_client, register_json):
     with Mocketizer():
         register_json(HTTPretty.GET, '/users/2/', json={
             'id': 2,
@@ -79,18 +76,18 @@ async def test_simpl_get_id(games_client, register_json):
             'role': 'player',
         })
 
-        user2 = await games_client.users.get(id=2)
+        user2 = sync_games_client.users.get(id=2)
         assert user2.username == 'user2'
 
     with Mocketizer():
         register_json(HTTPretty.GET, '/users/9999/', status=404)
 
-        with pytest.raises(games_client.ResourceNotFound):
-            await games_client.users.get(id=9999)
+        with pytest.raises(sync_games_client.ResourceNotFound):
+            sync_games_client.users.get(id=9999)
 
 
-@pytest.mark.asyncio
-async def test_simpl_get_params(games_client, register_json):
+
+def test_simpl_get_params(sync_games_client, register_json):
     with Mocketizer():
         register_json(HTTPretty.GET, '/users/?role=player', json=[
             {
@@ -105,14 +102,14 @@ async def test_simpl_get_params(games_client, register_json):
             },
         ])
 
-        with pytest.raises(games_client.MultipleResourcesFound):
-            await games_client.users.get(role='player')
+        with pytest.raises(sync_games_client.MultipleResourcesFound):
+            sync_games_client.users.get(role='player')
 
     with Mocketizer():
         register_json(HTTPretty.GET, '/users/?role=cookie_monster', json=[])
 
-        with pytest.raises(games_client.ResourceNotFound):
-            await games_client.users.get(role='cookie_monster')
+        with pytest.raises(sync_games_client.ResourceNotFound):
+            sync_games_client.users.get(role='cookie_monster')
 
     with Mocketizer():
         register_json(HTTPretty.GET, '/users/?role=facilitator', json=[
@@ -123,22 +120,22 @@ async def test_simpl_get_params(games_client, register_json):
             },
         ])
 
-        facilitator = await games_client.users.get(role='facilitator')
+        facilitator = sync_games_client.users.get(role='facilitator')
         assert facilitator.username == 'user3'
 
 
-@pytest.mark.asyncio
-async def test_simpl_bulk_unauthd(games_client, register_json):
+
+def test_simpl_bulk_unauthd(sync_games_client, register_json):
     with Mocketizer():
         register_json(HTTPretty.GET, '/bulk/users/', status=403)
 
-        with pytest.raises(games_client.NotAuthenticatedError):
-            resources = await games_client.bulk.users.all()
+        with pytest.raises(sync_games_client.NotAuthenticatedError):
+            resources = sync_games_client.bulk.users.all()
             assert resources is None
 
 
-@pytest.mark.asyncio
-async def test_simpl_bulk_create(games_client, register_json):
+
+def test_simpl_bulk_create(sync_games_client, register_json):
     payload = [
         {
             'id': 1,
@@ -154,32 +151,36 @@ async def test_simpl_bulk_create(games_client, register_json):
     with Mocketizer():
         register_json(HTTPretty.POST, '/bulk/users/', json=payload, status=201)
 
-        resources = await games_client.bulk.users.create(payload)
+        resources = sync_games_client.bulk.users.create(payload)
         assert resources is None
 
     with Mocketizer():
         register_json(HTTPretty.POST, '/bulk/users/', json=payload, status=201)
 
-        resources = await games_client.bulk.users.create(payload, return_ids=True)
+        resources = sync_games_client.bulk.users.create(payload,
+                                                        return_ids=True)
         assert len(resources) == 2
         assert resources[0] == 1
 
     with Mocketizer():
         register_json(HTTPretty.POST, '/bulk/users/', json=payload, status=500)
 
-        with pytest.raises(games_client.HTTPError):
-            await games_client.bulk.users.create(payload)
+        with pytest.raises(sync_games_client.HTTPError):
+            sync_games_client.bulk.users.create(payload)
 
-@pytest.mark.asyncio
-async def test_simpl_bulk_delete(games_client, register_json):
+
+
+def test_simpl_bulk_delete(sync_games_client, register_json):
     with Mocketizer():
-        register_json(HTTPretty.DELETE, '/bulk/users/?id__in=1&id__in=2', status=204)
+        register_json(HTTPretty.DELETE, '/bulk/users/?id__in=1&id__in=2',
+                      status=204)
 
-        resources = await games_client.bulk.users.delete(id__in=[1, 2])
+        resources = sync_games_client.bulk.users.delete(id__in=[1, 2])
         assert resources is None
 
     with Mocketizer():
-        register_json(HTTPretty.DELETE, '/bulk/users/?id__in=1&id__in=2', status=500)
+        register_json(HTTPretty.DELETE, '/bulk/users/?id__in=1&id__in=2',
+                      status=500)
 
-        with pytest.raises(games_client.HTTPError):
-            await games_client.bulk.users.delete(id__in=[1, 2])
+        with pytest.raises(sync_games_client.HTTPError):
+            sync_games_client.bulk.users.delete(id__in=[1, 2])

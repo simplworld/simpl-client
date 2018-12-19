@@ -7,7 +7,7 @@ A pre-configured synchronous generic client for the simpl-games-api
 
 Usage::
 
-    from modelservice.simpl.sync import games_client
+    from modelservice.simpl.sync import async_games_client
 
 Endpoints
 ---------
@@ -19,11 +19,11 @@ Endpoints are available as properties on the main instance.
 
 Retrieves all resources (essentially a simple ``GET`` on the endpoint)::
 
-    games_client.runusers.all()  # GET /runusers/
+    async_games_client.runusers.all()  # GET /runusers/
 
 ``.filter(**kwargs)`` calls a ``GET`` with ``kwargs`` as querystring values::
 
-    games_client.runusers.filter(run=12, world=1)  # GET /runusers/?run=12&world=1
+    async_games_client.runusers.filter(run=12, world=1)  # GET /runusers/?run=12&world=1
 
 ``.get(**kwargs)``
 ~~~~~~~~~~~~~~~~~~
@@ -43,9 +43,9 @@ Note that ``.get()`` will return a ``Resource``, not a list of ``Resource``s
 
 ::
 
-    games_client.runusers.filter(run=12, world=1)  # GET /runusers/?run=12&world=1
-    games_client.runusers.filter(id=12)  # GET /runusers/12/
-    games_client.users.filter(username='alice')  # GET /users/alice/
+    async_games_client.runusers.filter(run=12, world=1)  # GET /runusers/?run=12&world=1
+    async_games_client.runusers.filter(id=12)  # GET /runusers/12/
+    async_games_client.users.filter(username='alice')  # GET /users/alice/
 
 ``.create(payload)``
 ~~~~~~~~~~~~~~~~~~~~
@@ -53,7 +53,7 @@ Note that ``.get()`` will return a ``Resource``, not a list of ``Resource``s
 Will result in a ``POST``, with ``payload`` (a ``dict``) as the request's body,
 returning a new ``Resource``::
 
-    runuser = games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
+    runuser = async_games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
 
 ``.get_or_create(defaults, **kwargs)``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,7 +71,7 @@ to create the resource.
 If ``payload`` contains a key called ``'id'``, will issue a ``PUT``, otherwise
 it will call ``.create``::
 
-    runuser = games_client.runusers.create_or_update({'id': 1234, 'world': 1})  # PUT /runusers/1234/
+    runuser = async_games_client.runusers.create_or_update({'id': 1234, 'world': 1})  # PUT /runusers/1234/
 
 
 ``.delete(pk)``
@@ -79,7 +79,7 @@ it will call ``.create``::
 
 Will issue a ``DELETE``, and will use ``pk`` as part of the URL::
 
-    games_client.runusers.delete(24)  # DELETE /runusers/24/
+    async_games_client.runusers.delete(24)  # DELETE /runusers/24/
 
 Resources
 ---------
@@ -98,13 +98,13 @@ contains the original payload received from the server.
 ``Resource.delete()`` will result in a ``DELETE``, with ``Resource.id`` as
 par of the URL::
 
-    runuser = games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
+    runuser = async_games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
     runuser.delete()  # DELETE /runuser/345/ -- the ID 345 was returned by the server in the previous response
 
 ``Resource.save()`` will result in a ``PUT``, with ``Resource.id`` as
 par of the URL::
 
-    runuser = games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
+    runuser = async_games_client.runusers.create({'run': 12, 'world': 1})  # POST /runusers/
     runuser.run = 13
     runuser.save()  # PUT /runuser/345/
 
@@ -113,8 +113,8 @@ Bulk requests
 
 ::
 
-    games_client.bulk.results.create([...], return_ids=False)
-    games_client.bulk.results.delete(**lookup)
+    async_games_client.bulk.results.create([...], return_ids=False)
+    async_games_client.bulk.results.delete(**lookup)
 
 
 Detail Routes
@@ -122,9 +122,21 @@ Detail Routes
 
 ::
 
-    games_client.scenario(id=123).rewind() 
+    async_games_client.scenario(id=123).rewind() 
 
 """
+
+
+def convert_lookup(lookup):
+    items = lookup.items()
+    multi_dict = []
+    for k, v in items:
+        if isinstance(v, (tuple, list)):
+            for item in v:
+                multi_dict.append((k, str(item)))
+        else:
+            multi_dict.append((k, str(v)))
+    return multi_dict
 
 
 class GameResource(Resource):
@@ -149,7 +161,7 @@ class BulkEndpoint(Endpoint):
         :param params: filter lookup for objects to be deleted
         :return: None
         """
-        params = self.convert_lookup(kwargs)
+        params = convert_lookup(kwargs)
         response = self.request('delete', self.url, params=params)
 
         if response.status_code != 204:
