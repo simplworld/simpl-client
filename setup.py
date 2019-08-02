@@ -13,6 +13,7 @@ setup(
     version=VERSION,
     description='Python clients for accessing simpl-games-api',
     long_description=readme,
+    long_description_content_type="text/markdown",
     author='',
     author_email='',
     url='https://github.com/simplworld/simpl-client',
