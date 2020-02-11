@@ -7,7 +7,7 @@ A pre-configured synchronous generic client for the simpl-games-api
 
 Usage::
 
-    from simpl_client.sync import GamesAPIClient
+    from simpl_client.syn import GamesAPIClient
     sync_games_client = GamesAPIClient(url=simpl_url, auth=simpl_auth)
 
 Endpoints

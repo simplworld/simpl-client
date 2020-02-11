@@ -1,1 +1,1 @@
-from simpl_client.async.games_client import GamesAPIClient  # noqa
+from simpl_client.asyn.games_client import GamesAPIClient  # noqa

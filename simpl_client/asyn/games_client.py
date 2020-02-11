@@ -7,7 +7,7 @@ A pre-configured asynchronous generic client for the simpl-games-api.
 
 Usage::
 
-    from simpl_client.async import GamesAPIClient
+    from simpl_client.asyn import GamesAPIClient
     async_games_client = GamesAPIClient(url=simpl_url, auth=simpl_auth)
 
 Endpoints

@@ -4,8 +4,8 @@ import pytest
 
 from mocket.plugins.httpretty import HTTPretty
 
-from simpl_client.async import GamesAPIClient as AsyncGamesAPIClient
-from simpl_client.sync import GamesAPIClient as SyncGamesAPIClient
+from simpl_client.asyn import GamesAPIClient as AsyncGamesAPIClient
+from simpl_client.syn import GamesAPIClient as SyncGamesAPIClient
 
 SIMPL_GAMES_URL = 'http://dummy.org'
 SIMPL_GAMES_AUTH = ('user', 'user')
