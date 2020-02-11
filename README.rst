@@ -13,22 +13,22 @@ Usage
 
 To asynchronously access simpl-games-api use::
 
-    from simpl_client.async import GamesAPIClient
-    async_games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
+    from simpl_client.asyn import GamesAPIClient
+    asyn_games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
 
 for backwards compatibility, the default is asynchronous access::
 
     from simpl_client import GamesAPIClient
-    async_games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
+    asyn_games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
 
 See simpl_client/async/games_client.py for asynchronous endpoints
 
 To synchronously access simpl-games-api use::
 
-    from simpl_client.sync import GamesAPIClient
-    sync_games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
+    from simpl_client.syn import GamesAPIClient
+    syn_games_client = GamesAPIClient(url=SIMPL_GAMES_URL, auth=SIMPL_GAMES_AUTH)
 
-See simpl_client/sync/games_client.py for synchronous endpoints
+See simpl_client/syn/games_client.py for synchronous endpoints
 
 Installation
 ------------
